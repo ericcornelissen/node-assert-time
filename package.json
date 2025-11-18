@@ -1,0 +1,27 @@
+{
+  "name": "@ericcornelissen/assert-time",
+  "version": "1.0.0",
+  "description": "assert the duration of a (blocking or async) function under test",
+  "type": "commonjs",
+  "main": "index.js",
+  "license": "MIT",
+  "author": {
+    "name": "Eric Cornelissen",
+    "email": "ericornelissen@gmail.com",
+    "url": "https://ericcornelissen.dev/"
+  },
+  "engines": {
+    "node": ">=0.10.31"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ericcornelissen/node-assert-time.git"
+  },
+  "scripts": {
+    "test": "node test.js"
+  },
+  "devDependencies": {
+    "mocha": "11.7.5",
+    "tape": "5.9.0"
+  }
+}
