@@ -1,41 +1,43 @@
 // SPDX-License-Identifier: MIT
 
-function assertTime(fn, timeout, onDelayed, onTime) {
+/**
+ * @param {Function} fut The function under test
+ * @param {number} timeout The maximum runtime of `fn` in milliseconds.
+ * @param {function(number): void} onSlow The function called if `fn`'s runtime exceeds `timeout`, receives the runtime in milliseconds.
+ * @param {function(number): void} onTime The function called if `fn`'s runtime is within `timeout`, receives the runtime in milliseconds.
+ * @throws {number | undefined} If `onSlow` is not provied `fn`'s duration, otherwise `undefined`
+ * @throws {Error} If `onSlow` is not provied `fn`'s duration exceeds `timeout`
+ */
+function assertTime(fut, timeout, onSlow, onTime) {
 	var t1, t2, duration;
 	var timedOut = false;
 
-	t1 = setTimeout(function () {
-		timedOut = true;
+	if (typeof onSlow === 'function') {
+		t1 = setTimeout(function () {
+			timedOut = true;
 
-		clearTimeout(t2);
-		onDelayed(duration || timeout);
-	}, timeout);
+			clearTimeout(t2);
+			onSlow(duration);
+		}, timeout);
+	}
 
 	var start = Date.now();
-	var result = fn();
-	if (isPromise(result)) {
-		result.then(function () {
-			duration = Date.now() - start;
-			if (!timedOut) {
-				clearTimeout(t1);
-				onTime(duration);
-			}
-		});
+	fut();
+	if (typeof onSlow === 'function') {
+		duration = Date.now() - start;
+    t2 = setTimeout(function () {
+      if (duration < timeout) {
+  			clearTimeout(t1);
+  			onTime(duration);
+      }
+		}, 0);
 	} else {
 		duration = Date.now() - start;
-		t2 = setTimeout(function () {
-			clearTimeout(t1);
-			onTime(duration);
-		}, 0);
-	}
-}
-
-function isPromise(v) {
-	try {
-		return v instanceof Promise;
-	} catch (_) {
-		// If `Promise` is not defined, then `v` cannot be a Promise
-		return false;
+		if (duration > timeout) {
+			throw new Error('Timeout of ' + timeout + 'ms exceeded (took ' + duration + 'ms)');
+		} else {
+			return duration;
+		}
 	}
 }
 
