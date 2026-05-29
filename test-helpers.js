@@ -1,5 +1,20 @@
 // SPDX-License-Identifier: MIT
 
+function hasPromises() {
+	try {
+		Promise;
+		return true;
+	} catch (_) {
+		return false;
+	}
+}
+
+function sleepAsync(ms) {
+	return new Promise(function (resolve) {
+		setTimeout(resolve, ms);
+	});
+}
+
 function sleepSync(ms) {
 	var start = Date.now();
 	while (Date.now() < start + ms) {
@@ -8,5 +23,7 @@ function sleepSync(ms) {
 }
 
 module.exports = {
+	hasPromises: hasPromises,
+	sleepAsync: sleepAsync,
 	sleepSync: sleepSync,
 };

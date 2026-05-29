@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: MIT
 
+var hasPromises = require('./test-helpers.js').hasPromises;
+var sleepAsync = require('./test-helpers.js').sleepAsync;
 var sleepSync = require('./test-helpers.js').sleepSync;
 
 var assertTime = require('./index.js');
@@ -93,6 +95,152 @@ var tests = [
 		assertTime(
 			function fut() {
 				sleepSync(wait);
+			},
+			timeout,
+			function onSlow(duration) {
+				console.log(
+					'✅',
+					name,
+					'[Timeout of ' + timeout + 'ms exceeded (took ' + duration + 'ms)]'
+				);
+			},
+			function onTime(duration) {
+				console.log(
+					'❌',
+					name,
+					'[Timeout of ' + timeout + 'ms met (took ' + duration + 'ms)]'
+				);
+				process.exit(1);
+			}
+		);
+	},
+
+	/* 5. Does not reject if it takes too long, async */
+	function () {
+		var name = '5. Does not reject if it takes too long, async';
+		var wait = 100, timeout = 200;
+
+		if (!hasPromises()) {
+			console.log(
+				'🟡',
+				name,
+				'[skipped, no Promise]'
+			);
+			return;
+		}
+
+		function fut() {
+			return sleepAsync(wait);
+		}
+
+		assertTime(fut, timeout)
+			.then(function onTime(duration) {
+				console.log(
+					'✅',
+					name,
+					'[Timeout of ' + timeout + 'ms met (took ' + duration + 'ms)]'
+				);
+			})
+			.catch(function onSlow(error) {
+				console.log(
+					'❌',
+					name,
+					'[' + error.message + ']'
+				);
+				process.exit(1);
+			});
+	},
+
+	/* 6. Does reject if it takes too long, async */
+	function () {
+		var name = '6. Does reject if it takes too long, async';
+		var wait = 200, timeout = 100;
+
+		if (!hasPromises()) {
+			console.log(
+				'🟡',
+				name,
+				'[skipped, no Promise]'
+			);
+			return;
+		}
+
+		function fut() {
+			return sleepAsync(wait);
+		}
+
+		assertTime(fut, timeout)
+			.then(function onTime(duration) {
+				console.log(
+					'❌',
+					name,
+					'[Timeout of ' + timeout + 'ms met (took ' + timeout + 'ms)]'
+				);
+				process.exit(1);
+			})
+			.catch(function onSlow(error) {
+				console.log(
+					'✅',
+					name,
+					'[' + error.message + ']'
+				);
+			});
+	},
+
+	/* 7. Calls onTime if it is quick enough, async */
+	function () {
+		var name = '7. Calls onTime if it is quick enough, async';
+		var wait = 100, timeout = 200;
+
+		if (!hasPromises()) {
+			console.log(
+				'🟡',
+				name,
+				'[skipped, no Promise]'
+			);
+			return;
+		}
+
+		assertTime(
+			function fut() {
+				return sleepAsync(wait);
+			},
+			timeout,
+			function onSlow(duration) {
+				console.log(
+					'❌',
+					name,
+					'[Timeout of ' + timeout + 'ms exceeded (took ' + duration + 'ms)]'
+				);
+				process.exit(1);
+			},
+			function onTime(duration) {
+				console.log(
+					'✅',
+					name,
+					'[Timeout of ' + timeout + 'ms met (took ' + duration + 'ms)]'
+				);
+			}
+		);
+	},
+
+	/* 8. Calls onSlow if it takes too long, async */
+	function () {
+		var name = '8. Calls onSlow if it takes too long, async';
+		var wait = 200, timeout = 100;
+
+		if (!hasPromises()) {
+			console.log(
+				'🟡',
+				name,
+				'[skipped, no Promise]'
+			);
+			return;
+		}
+
+		assertTime(
+			function fut() {
+				return sleepAsync(wait);
 			},
 			timeout,
 			function onSlow(duration) {
