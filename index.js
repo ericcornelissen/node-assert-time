@@ -6,7 +6,6 @@
  * @param {function(number): void} [onSlow] The function called if `fn`'s runtime exceeds `timeout`, receives the runtime in milliseconds.
  * @param {function(number): void} [onTime] The function called if `fn`'s runtime is within `timeout`, receives the runtime in milliseconds.
  * @throws {number | undefined | Promise<number> | Promise<undefined>} If `onSlow` is not provied `fn`'s duration, otherwise `undefined`.
- * @throws {Error} If `onSlow` is not provied `fn`'s duration exceeds `timeout`.
  * @throws {Error} If `onSlow` is not provided and `fn`'s duration exceeds `timeout`.
  */
 function assertTime(fut, deadline, onSlow, onTime) {
