@@ -2,67 +2,63 @@
 
 /**
  * @param {Function} fut The function under test.
- * @param {number} timeout The maximum runtime of `fn` in milliseconds.
+ * @param {number} deadline The maximum runtime of `fn` in milliseconds.
  * @param {function(number): void} [onSlow] The function called if `fn`'s runtime exceeds `timeout`, receives the runtime in milliseconds.
  * @param {function(number): void} [onTime] The function called if `fn`'s runtime is within `timeout`, receives the runtime in milliseconds.
  * @throws {number | undefined | Promise<number> | Promise<undefined>} If `onSlow` is not provied `fn`'s duration, otherwise `undefined`.
  * @throws {Error} If `onSlow` is not provied `fn`'s duration exceeds `timeout`.
+ * @throws {Error} If `onSlow` is not provided and `fn`'s duration exceeds `timeout`.
  */
-function assertTime(fut, timeout, onSlow, onTime) {
-	var t1, t2, duration;
+function assertTime(fut, deadline, onSlow, onTime) {
+	if (onSlow === undefined) {
+		return assertTimeThrowing(fut, deadline);
+	} else {
+		return assertTimeCallback(fut, deadline, onSlow, onTime);
+	}
+}
+
+function assertTimeCallback(fut, deadline, onSlow, onTime) {
+	var timeout, duration;
 	var timedOut = false;
 
-	if (typeof onSlow === 'function') {
-		t1 = setTimeout(function () {
-			timedOut = true;
-
-			clearTimeout(t2);
-			onSlow(duration || timeout);
-		}, timeout);
+	function check() {
+		duration = timer.end(start);
+		if (duration < deadline && !timedOut) {
+			clearTimeout(timeout);
+			onTime(duration);
+		}
 	}
 
-	var start = Date.now();
+	timeout = setTimeout(function () {
+		timedOut = true;
+		onSlow(duration || deadline);
+	}, deadline);
+
+	var start = timer.start();
 	var result = fut();
-	if (typeof onSlow === 'function') {
-		if (isPromise(result)) {
-			result.then(function () {
-				duration = Date.now() - start;
-				if (!timedOut) {
-					clearTimeout(t1);
-					onTime(duration);
-				}
-
-				return undefined;
-			});
-		} else {
-			duration = Date.now() - start;
-			t2 = setTimeout(function () {
-				if (duration < timeout) {
-					clearTimeout(t1);
-					onTime(duration);
-				}
-			}, 0);
-		}
-
-		return undefined;
+	if (isPromise(result)) {
+		result.then(check);
 	} else {
-		if (isPromise(result)) {
-			return result.then(function () {
-				duration = Date.now() - start;
-				if (duration > timeout) {
-					throw new Error('Timeout of ' + timeout + 'ms exceeded (took ' + duration + 'ms)');
-				} else {
-					return duration;
-				}
-			});
+		check();
+	}
+}
+
+function assertTimeThrowing(fut, deadline) {
+	function check() {
+		var duration = timer.end(start);
+		if (duration >= deadline) {
+			throw new Error('Timeout of ' + deadline + 'ms exceeded (took ' + duration + 'ms)');
 		} else {
-			duration = Date.now() - start;
-			if (duration > timeout) {
-				throw new Error('Timeout of ' + timeout + 'ms exceeded (took ' + duration + 'ms)');
-			} else {
-				return duration;
-			}
+			return duration;
 		}
+	}
+
+	var start = timer.start();
+	var result = fut();
+	if (isPromise(result)) {
+		return result.then(check);
+	} else {
+		return check();
 	}
 }
 
@@ -73,5 +69,14 @@ function isPromise(v) {
 		return false;
 	}
 }
+
+const timer = {
+	start: function () {
+		return { __timestamp: Date.now() };
+	},
+	end: function (start) {
+		return Date.now() - start.__timestamp;
+	}
+};
 
 module.exports = assertTime;
