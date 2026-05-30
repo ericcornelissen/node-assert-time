@@ -6,26 +6,52 @@ var sleepAsync = require('./test-helpers.js').sleepAsync;
 var sleepSync = require('./test-helpers.js').sleepSync;
 
 describe('pure mocha', function () {
-	it('too slow, fails', function () {
-		var wait = 200, timeout = 100;
+	describe('blocking', function () {
+		it('too slow, fails', function () {
+			var wait = 200, timeout = 100;
 
-		function fut() {
-			sleepSync(wait);
-		}
+			function fut() {
+				sleepSync(wait);
+			}
 
-		this.timeout(timeout);
-		fut();
+			this.timeout(timeout);
+			fut();
+		});
+
+		it('fast enough, succeeds', function () {
+			var wait = 100, timeout = 200;
+
+			function fut() {
+				sleepSync(wait);
+			}
+
+			this.timeout(timeout);
+			fut();
+		});
 	});
 
-	it('fast enough, succeeds', function () {
-		var wait = 100, timeout = 200;
+	describe('async', function () {
+		it('too slow, fails', function () {
+			var wait = 200, timeout = 100;
 
-		function fut() {
-			sleepSync(wait);
-		}
+			function fut() {
+				return sleepAsync(wait);
+			}
 
-		this.timeout(timeout);
-		fut();
+			this.timeout(timeout);
+			return fut();
+		});
+
+		it('fast enough, succeeds', function () {
+			var wait = 100, timeout = 200;
+
+			function fut() {
+				return sleepAsync(wait);
+			}
+
+			this.timeout(timeout);
+			return fut();
+		});
 	});
 });
 

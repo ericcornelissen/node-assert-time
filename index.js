@@ -22,7 +22,7 @@ function assertTime(fut, timeout, onSlow, onTime) {
 	}
 
 	var start = Date.now();
-	const result = fut();
+	var result = fut();
 	if (typeof onSlow === 'function') {
 		if (isPromise(result)) {
 			result.then(function () {
@@ -30,9 +30,9 @@ function assertTime(fut, timeout, onSlow, onTime) {
 				if (!timedOut) {
 					clearTimeout(t1);
 					onTime(duration);
-        }
+				}
 
-        return undefined;
+				return undefined;
 			});
 		} else {
 			duration = Date.now() - start;
@@ -43,6 +43,8 @@ function assertTime(fut, timeout, onSlow, onTime) {
 				}
 			}, 0);
 		}
+
+		return undefined;
 	} else {
 		if (isPromise(result)) {
 			return result.then(function () {

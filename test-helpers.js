@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-function hasPromises() {
+function hasPromise() {
 	try {
 		Promise;
 		return true;
@@ -23,7 +23,7 @@ function sleepSync(ms) {
 }
 
 module.exports = {
-	hasPromises: hasPromises,
+	hasPromise: hasPromise,
 	sleepAsync: sleepAsync,
 	sleepSync: sleepSync,
 };

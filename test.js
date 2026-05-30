@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-var hasPromises = require('./test-helpers.js').hasPromises;
+var hasPromise = require('./test-helpers.js').hasPromise;
 var sleepAsync = require('./test-helpers.js').sleepAsync;
 var sleepSync = require('./test-helpers.js').sleepSync;
 
@@ -120,7 +120,7 @@ var tests = [
 		var name = '5. Does not reject if it takes too long, async';
 		var wait = 100, timeout = 200;
 
-		if (!hasPromises()) {
+		if (!hasPromise()) {
 			console.log(
 				'🟡',
 				name,
@@ -156,7 +156,7 @@ var tests = [
 		var name = '6. Does reject if it takes too long, async';
 		var wait = 200, timeout = 100;
 
-		if (!hasPromises()) {
+		if (!hasPromise()) {
 			console.log(
 				'🟡',
 				name,
@@ -192,7 +192,7 @@ var tests = [
 		var name = '7. Calls onTime if it is quick enough, async';
 		var wait = 100, timeout = 200;
 
-		if (!hasPromises()) {
+		if (!hasPromise()) {
 			console.log(
 				'🟡',
 				name,
@@ -229,7 +229,7 @@ var tests = [
 		var name = '8. Calls onSlow if it takes too long, async';
 		var wait = 200, timeout = 100;
 
-		if (!hasPromises()) {
+		if (!hasPromise()) {
 			console.log(
 				'🟡',
 				name,

@@ -13,14 +13,15 @@ it did not take longer than expected.
 var assertTime = require('@ericcornelissen/assert-time');
 
 var fut = require('./index.js');
+var timeout = 100;
 
 // will throw if slow
-assertTime(fut, 100);
+assertTime(fut, timeout);
 
-// will call onSlow or onTime
+// will call `onSlow` if slow, `onTime` otherwise
 assertTime(
   fut,
-  100,
+  timeout,
   function onSlow(duration) {
     // ...
   },
@@ -30,25 +31,59 @@ assertTime(
 );
 ```
 
-### [Tape]
+### [AVA]
+
+With [AVA], blocking tests don't cause tests to fail due to a timeout. Async
+tests do.
 
 ```javascript
-var test = require('tape');
+var test = require('ava').default; // ^8
 var assertTime = require('@ericcornelissen/assert-time');
 
 var fut = require('./index.js');
+var timeout = 100;
 
-test('timing test #1', function (t) {
+test('timing test, variant #1', function (t) {
+  // Causes an assertion error
+  t.doesNotThrow(function () {
+    assertTime(fut, timeout);
+  });
+});
+
+test('timing test, variant #2', function (t) {
+  // Causes a test error
+  assertTime(fut, timeout);
+  t.pass();
+});
+```
+
+[ava]: https://www.npmjs.com/package/ava
+
+### [tape]
+
+With [tape], blocking tests don't cause tests to fail due to a timeout. Async
+tests do.
+
+```javascript
+var test = require('tape'); // ^5
+var assertTime = require('@ericcornelissen/assert-time');
+
+var fut = require('./index.js');
+var timeout = 100;
+
+test('timing test, variant #1', function (t) {
+  // Causes a test error
   t.doesNotThrow(function () {
     assertTime(fut, timeout);
   });
   t.end();
 });
 
-test('timing test #2', function (t) {
+test('timing test, variant #2', function (t) {
+  // Causes a test error
   assertTime(
     fut,
-    100,
+    timeout,
     function onSlow(duration) {
       t.fail('Test timed out after ' + duration + 'ms');
       t.end();
@@ -57,6 +92,12 @@ test('timing test #2', function (t) {
       t.end();
     }
   );
+});
+
+test('timing test, variant #3', function (t) {
+  // Causes the test to error and the test suite to STOP
+  assertTime(fut, timeout);
+  t.end();
 });
 ```
 
