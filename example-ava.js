@@ -37,7 +37,7 @@ test('pure AVA, async, too slow, fails', function (t) {
 	}
 
 	t.timeout(timeout);
-	return fut().then(() => t.pass());
+	return fut().then(t.pass);
 });
 
 test('pure AVA, async, fast enough, succeeds', function (t) {
@@ -48,7 +48,7 @@ test('pure AVA, async, fast enough, succeeds', function (t) {
 	}
 
 	t.timeout(timeout);
-	return fut().then(() => t.pass());
+	return fut().then(t.pass);
 });
 
 test('using assert-time, blocking, too slow, fails', function (t) {
