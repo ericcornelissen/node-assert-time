@@ -208,31 +208,22 @@ var tests = [
 			return sleepAsync(wait);
 		}
 
-		var duration, promises = [];
-		for (var i = 0; i < iterations; i++) {
-			var promise = assertTime(fut, timeout)
-				.then(function onTime(dur) {
-					duration = dur;
-				})
-				.catch(function onSlow(error) {
-					console.log(
-						'❌',
-						name,
-						'[' + error.message + ']'
-					);
-					process.exit(1);
-				});
-
-			promises.push(promise);
-		}
-
-		Promise.all(promises).then(function () {
-			console.log(
-				'✅',
-				name,
-				'[Timeout of ' + timeout + 'ms met (took ' + duration + 'ms)]'
-			);
-		});
+		assertTime(fut, timeout)
+			.then(function onTime(duration) {
+  			console.log(
+  				'✅',
+  				name,
+  				'[Timeout of ' + timeout + 'ms met (took ' + duration + 'ms)]'
+  			);
+			})
+			.catch(function onSlow(error) {
+				console.log(
+					'❌',
+					name,
+					'[' + error.message + ']'
+				);
+				process.exit(1);
+			});
 	},
 
 	/* 8. Does reject if it takes too long, async */
@@ -253,31 +244,22 @@ var tests = [
 			return sleepAsync(wait);
 		}
 
-		var error, promises = [];
-		for (var i = 0; i < iterations; i++) {
-			var promise = assertTime(fut, timeout)
-				.then(function onTime(duration) {
-					console.log(
-						'❌',
-						name,
-						'[Timeout of ' + timeout + 'ms met (took ' + duration + 'ms)]'
-					);
-					process.exit(1);
-				})
-				.catch(function onSlow(err) {
-					error = err;
-				});
-
-			promises.push(promise);
-		}
-
-		Promise.all(promises).then(function () {
-			console.log(
-				'✅',
-				name,
-				'[' + error.message + ']'
-			);
-		});
+    assertTime(fut, timeout)
+			.then(function onTime(duration) {
+				console.log(
+					'❌',
+					name,
+					'[Timeout of ' + timeout + 'ms met (took ' + duration + 'ms)]'
+				);
+				process.exit(1);
+			})
+			.catch(function onSlow(error) {
+  			console.log(
+  				'✅',
+  				name,
+  				'[' + error.message + ']'
+  			);
+			});
 	},
 
 	/* 9. Does reject if duration==timeout, async */
@@ -298,31 +280,22 @@ var tests = [
 			return sleepAsync(wait);
 		}
 
-		var error, promises = [];
-		for (var i = 0; i < iterations; i++) {
-			var promise = assertTime(fut, timeout)
-				.then(function onTime(duration) {
-					console.log(
-						'❌',
-						name,
-						'[Timeout of ' + timeout + 'ms met (took ' + duration + 'ms)]'
-					);
-					process.exit(1);
-				})
-				.catch(function onSlow(err) {
-					error = err;
-				});
-
-			promises.push(promise);
-		}
-
-		Promise.all(promises).then(function () {
-			console.log(
-				'✅',
-				name,
-				'[' + error.message + ']'
-			);
-		});
+		assertTime(fut, timeout)
+			.then(function onTime(duration) {
+				console.log(
+					'❌',
+					name,
+					'[Timeout of ' + timeout + 'ms met (took ' + duration + 'ms)]'
+				);
+				process.exit(1);
+			})
+			.catch(function onSlow(error) {
+  			console.log(
+  				'✅',
+  				name,
+  				'[' + error.message + ']'
+  			);
+			});
 	},
 
 	/* 10. Calls onTime if it is quick enough, async */
