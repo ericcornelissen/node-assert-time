@@ -13,12 +13,12 @@ function sleepAsync(ms) {
 	var start = Date.now();
 	return new Promise(function (resolve) {
 		setTimeout(function () {
-				while (Date.now() < start + ms) {
-					// Busy-wait until we're sure enough time has passed
-				}
+			while (Date.now() < start + ms) {
+				// Busy-wait until we're sure enough time has passed
+			}
 
 			resolve();
-		 }, ms)
+		 }, ms);
 	});
 }
 
