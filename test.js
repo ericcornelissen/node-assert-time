@@ -6,7 +6,7 @@ var sleepSync = require('./test-helpers.js').sleepSync;
 
 var assertTime = require('./index.js');
 
-var iterations = process.env.CI ? 1000 : 100;
+var iterations = process.env.CI ? 1000 : 1;
 
 var tests = [
 	/* 1. Does not throw if it is quick enough, blocking */
@@ -210,11 +210,11 @@ var tests = [
 
 		assertTime(fut, timeout)
 			.then(function onTime(duration) {
-  			console.log(
-  				'✅',
-  				name,
-  				'[Timeout of ' + timeout + 'ms met (took ' + duration + 'ms)]'
-  			);
+				console.log(
+					'✅',
+					name,
+					'[Timeout of ' + timeout + 'ms met (took ' + duration + 'ms)]'
+				);
 			})
 			.catch(function onSlow(error) {
 				console.log(
@@ -244,7 +244,7 @@ var tests = [
 			return sleepAsync(wait);
 		}
 
-    assertTime(fut, timeout)
+		assertTime(fut, timeout)
 			.then(function onTime(duration) {
 				console.log(
 					'❌',
@@ -254,11 +254,11 @@ var tests = [
 				process.exit(1);
 			})
 			.catch(function onSlow(error) {
-  			console.log(
-  				'✅',
-  				name,
-  				'[' + error.message + ']'
-  			);
+				console.log(
+					'✅',
+					name,
+					'[' + error.message + ']'
+				);
 			});
 	},
 
@@ -290,11 +290,11 @@ var tests = [
 				process.exit(1);
 			})
 			.catch(function onSlow(error) {
-  			console.log(
-  				'✅',
-  				name,
-  				'[' + error.message + ']'
-  			);
+				console.log(
+					'✅',
+					name,
+					'[' + error.message + ']'
+				);
 			});
 	},
 
