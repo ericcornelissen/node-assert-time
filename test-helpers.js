@@ -10,17 +10,15 @@ function hasPromise() {
 }
 
 function sleepAsync(ms) {
-  var start = Date.now();
-  return new Promise(function (resolve) {
-    function $sleep() {
-      if (Date.now() < start + ms) {
-        setTimeout($sleep, ms, 0);
-      } else {
-        resolve();
-      }
-    }
+	var start = Date.now();
+	return new Promise(function (resolve) {
+		setTimeout(function () {
+				while (Date.now() < start + ms) {
+					// Busy-wait to block the event loop
+				}
 
-    $sleep(ms);
+			resolve();
+		 }, ms)
 	});
 }
 
