@@ -24,7 +24,7 @@ function assertTimeCallback(fut, deadline, onSlow, onTime) {
 		duration = timer.end(start);
 		if (duration < deadline && !timedOut) {
 			clearTimeout(timeout);
-			onTime(duration);
+			if (onTime) onTime(duration);
 		}
 	}
 
