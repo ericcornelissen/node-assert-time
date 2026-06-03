@@ -5,7 +5,7 @@
  * @param {number} deadline The maximum runtime of `fn` in milliseconds.
  * @param {function(number): void} [onSlow] The function called if `fn`'s runtime exceeds `timeout`, receives the runtime in milliseconds.
  * @param {function(number): void} [onTime] The function called if `fn`'s runtime is within `timeout`, receives the runtime in milliseconds.
- * @throws {number | undefined | Promise<number> | Promise<undefined>} If `onSlow` is not provied `fn`'s duration, otherwise `undefined`.
+ * @returns {number | Promise<number> | undefined} If `onSlow` is not provied `fn`'s duration, otherwise `undefined`.
  * @throws {Error} If `onSlow` is not provided and `fn`'s duration exceeds `timeout`.
  */
 function assertTime(fut, deadline, onSlow, onTime) {
@@ -24,7 +24,7 @@ function assertTimeCallback(fut, deadline, onSlow, onTime) {
 		duration = timer.end(start);
 		if (duration < deadline && !timedOut) {
 			clearTimeout(timeout);
-			onTime(duration);
+			if (onTime) onTime(duration);
 		}
 	}
 
