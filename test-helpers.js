@@ -10,8 +10,17 @@ function hasPromise() {
 }
 
 function sleepAsync(ms) {
-	return new Promise(function (resolve) {
-		setTimeout(resolve, ms);
+  var start = Date.now();
+  return new Promise(function (resolve) {
+    function $sleep() {
+      if (Date.now() < start + ms) {
+        setTimeout($sleep, ms, 0);
+      } else {
+        resolve();
+      }
+    }
+
+    $sleep(ms);
 	});
 }
 
