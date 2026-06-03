@@ -14,7 +14,7 @@ function sleepAsync(ms) {
 	return new Promise(function (resolve) {
 		setTimeout(function () {
 				while (Date.now() < start + ms) {
-					// Busy-wait to block the event loop
+					// Busy-wait until we're sure enough time has passed
 				}
 
 			resolve();
