@@ -15,7 +15,7 @@ var assertTime = require('@ericcornelissen/assert-time');
 var fut = require('./index.js');
 var timeout = 100;
 
-// will throw if slow
+// will throw/reject if slow
 assertTime(fut, timeout);
 
 // will call `onSlow` if slow, `onTime` otherwise

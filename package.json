@@ -1,6 +1,6 @@
 {
   "name": "@ericcornelissen/assert-time",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "assert the duration of a (blocking or async) function under test",
   "type": "commonjs",
   "license": "MIT",
