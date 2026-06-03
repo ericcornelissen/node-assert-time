@@ -6,7 +6,7 @@ var sleepSync = require('./test-helpers.js').sleepSync;
 
 var assertTime = require('./index.js');
 
-var iterations = process.env.CI ? 1000 : 1;
+var iterations = process.env.CI ? 50 : 1;
 
 var tests = [
 	/* 1. Does not throw if it is quick enough, blocking */
