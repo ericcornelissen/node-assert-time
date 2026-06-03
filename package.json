@@ -1,6 +1,6 @@
 {
   "name": "@ericcornelissen/assert-time",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "assert the duration of a (blocking or async) function under test",
   "type": "commonjs",
   "license": "MIT",
@@ -15,6 +15,7 @@
   "exports": {
     ".": {
       "import": "./index.js",
+      "require": "./index.js",
       "types": "./index.d.ts"
     }
   },
