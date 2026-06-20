@@ -90,8 +90,10 @@ test('timing test, variant #2', function () {
 
 ### [tape]
 
-With [tape], blocking tests don't cause tests to fail due to a timeout. Async
-tests do.
+Until v5.10.0 of [tape], blocking tests don't cause tests to fail due to a
+timeout. Starting in v5.10.0 you need to set the `ignoreSyncTimeout` option to
+`false` or `NODE_TAPE_STRICT_TIMEOUT` environment variable to have blocking
+tests fail due to a timeout. Async tests exceeding the timeout always fail.
 
 ```javascript
 var test = require('tape'); // ^5
