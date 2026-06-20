@@ -44,20 +44,49 @@ var fut = require('./index.js');
 var timeout = 100;
 
 test('timing test, variant #1', function (t) {
+  // Causes a test error
+  assertTime(fut, timeout);
+  t.pass();
+});
+
+test('timing test, variant #2', function (t) {
   // Causes an assertion error
   t.doesNotThrow(function () {
     assertTime(fut, timeout);
   });
 });
-
-test('timing test, variant #2', function (t) {
-  // Causes a test error
-  assertTime(fut, timeout);
-  t.pass();
-});
 ```
 
 [ava]: https://www.npmjs.com/package/ava
+
+### [node:test]
+
+With [node:test], blocking tests don't cause tests to fail due to a timeout.
+Async tests do.
+
+```javascript
+var assert = require('node:assert');
+var test = require('node:test');
+
+var assertTime = require('@ericcornelissen/assert-time');
+
+var fut = require('./index.js');
+var timeout = 100;
+
+test('timing test, variant #1', function () {
+  // Causes a test error
+  assertTime(fut, timeout);
+});
+
+test('timing test, variant #2', function () {
+  // Causes an assertion error
+  assert.doesNotThrow(function () {
+    assertTime(fut, timeout);
+  });
+});
+```
+
+[node:test]: https://nodejs.org/api/test.html
 
 ### [tape]
 
