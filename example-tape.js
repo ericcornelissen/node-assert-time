@@ -57,6 +57,58 @@ test('pure tape', function (t) {
 	});
 });
 
+test('tape with ignoreSyncTimeout', function (t) {
+	t.test('blocking', function (t) {
+		t.test('too slow, fails', { ignoreSyncTimeout: false }, function (t) {
+			var wait = 200, timeout = 100;
+
+			function fut() {
+				sleepSync(wait);
+			}
+
+			t.timeoutAfter(timeout);
+			fut();
+			t.end();
+		});
+
+		t.test('fast enough, succeeds', { ignoreSyncTimeout: false }, function (t) {
+			var wait = 100, timeout = 200;
+
+			function fut() {
+				sleepSync(wait);
+			}
+
+			t.timeoutAfter(timeout);
+			fut();
+			t.end();
+		});
+	});
+
+	t.test('async', function (t) {
+		t.test('too slow, fails', { ignoreSyncTimeout: false }, function (t) {
+			var wait = 200, timeout = 100;
+
+			function fut() {
+				return sleepAsync(wait);
+			}
+
+			t.timeoutAfter(timeout);
+			return fut();
+		});
+
+		t.test('fast enough, succeeds', { ignoreSyncTimeout: false }, function (t) {
+			var wait = 100, timeout = 200;
+
+			function fut() {
+				return sleepAsync(wait);
+			}
+
+			t.timeoutAfter(timeout);
+			return fut();
+		});
+	});
+});
+
 test('using assert-time', function (t) {
 	t.test('throwing API', function (t) {
 		t.test('blocking', function (t) {
