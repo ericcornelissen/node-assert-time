@@ -1,0 +1,41 @@
+name: Example
+on:
+  pull_request: ~
+  push:
+    branches:
+    - main
+
+permissions: read-all
+
+jobs:
+  example:
+    name: ${{ matrix.framework }}
+    runs-on: ubuntu-26.04
+    strategy:
+      fail-fast: false
+      matrix:
+        framework:
+        - ava
+        - mocha
+        - node
+        - tape
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      with:
+        persist-credentials: false
+    - name: Install Node.js
+      uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      with:
+        node-version-file: .nvmrc
+    - name: Install dependencies
+      run: npm clean-install
+    - name: Run example
+      continue-on-error: true
+      id: example
+      env:
+        WHAT: ${{ matrix.framework }}
+      run: npm run "example:${WHAT}"
+    - name: Expect failure
+      if: steps.example.outcome == 'success'
+      run: exit 1
