@@ -133,3 +133,28 @@ test('timing test, variant #3', function (t) {
 ```
 
 [tape]: https://www.npmjs.com/package/tape
+
+### [uvu]
+
+[uvu] does not support test timeouts natively.
+
+```javascript
+var test = require('uvu').test;
+
+var assertTime = require('@ericcornelissen/assert-time');
+
+var fut = require('./index.js');
+var timeout = 100;
+
+test('timing test, blocking', function () {
+  assertTime(fut, timeout);
+});
+
+test('timing test, async', async function () {
+  await assertTime(fut, timeout);
+});
+
+test.run();
+```
+
+[uvu]: https://www.npmjs.com/package/uvu
