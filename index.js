@@ -43,9 +43,12 @@ function assertTimeCallback(fut, deadline, onSlow, onTime) {
 }
 
 function assertTimeThrowing(fut, deadline) {
+	var timeout;
+	var timedOut = false;
 	function check() {
 		var duration = timer.end(start);
-		if (duration >= deadline) {
+		if (duration >= deadline && !timedOut) {
+			clearTimeout(timeout);
 			throw new Error('Timeout of ' + deadline + 'ms exceeded (took ' + duration + 'ms)');
 		} else {
 			return duration;
@@ -55,7 +58,14 @@ function assertTimeThrowing(fut, deadline) {
 	var start = timer.start();
 	var result = fut();
 	if (isPromise(result)) {
-		return result.then(check);
+		var racer = new Promise(function (_, reject) {
+			timeout = setTimeout(function () {
+				timedOut = true;
+				reject(new Error('Timeout of ' + deadline + 'ms exceeded'));
+			}, deadline);
+		});
+
+		return Promise.race([racer, result.then(check)]);
 	} else {
 		return check();
 	}
