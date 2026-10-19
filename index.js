@@ -47,8 +47,8 @@ function assertTimeThrowing(fut, deadline) {
 	var timedOut = false;
 	function check() {
 		var duration = timer.end(start);
+		clearTimeout(timeout);
 		if (duration >= deadline && !timedOut) {
-			clearTimeout(timeout);
 			throw new Error('Timeout of ' + deadline + 'ms exceeded (took ' + duration + 'ms)');
 		} else {
 			return duration;
