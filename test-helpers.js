@@ -18,7 +18,7 @@ function sleepAsync(ms) {
 			}
 
 			resolve();
-		 }, ms);
+		}, ms);
 	});
 }
 
