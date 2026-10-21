@@ -1,3 +1,5 @@
+<!-- SPDX-License-Identifier: CC-BY-4.0 -->
+
 # `assert-time`
 
 Assert the duration of a (blocking or async) function under test.
