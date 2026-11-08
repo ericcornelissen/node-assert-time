@@ -5,7 +5,7 @@ var assertTime = require('./index.js');
 var sleepAsync = require('./test-helpers.js').sleepAsync;
 var sleepSync = require('./test-helpers.js').sleepSync;
 
-test('pure AVA, blocking, too slow, yet succeeds', function (t) {
+test('pure AVA, blocking, too slow, fails', function (t) {
 	var wait = 200, timeout = 100;
 
 	function fut() {
