@@ -35,8 +35,9 @@ assertTime(
 
 ### [AVA]
 
-With [AVA], blocking tests don't cause tests to fail due to a timeout. Async
-tests do.
+Until v8.3.0 of [AVA], blocking tests don't cause tests to fail due to a
+timeout. Starting in v8.3.0 this is the case. Async have always caused tests to
+fail due to a timeout.
 
 ```javascript
 var test = require('ava').default; // ^8
